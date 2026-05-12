@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Catálogo completo de productos ARGYAN. Línea intensiva, granos almacenados, embalaje, control de plagas urbanas y elementos de seguridad e higiene.">
+    <meta name="keywords" content="catálogo agroindustrial, fitosanitarios, bigbags, granos almacenados, control plagas, EPP, Argentina">
+    <meta name="author" content="ARGYAN">
+    <meta name="theme-color" content="#0a1f14">
+
+    <meta property="og:title" content="ARGYAN | Catálogo de Productos">
+    <meta property="og:description" content="Explore nuestras cinco líneas de negocio. Seleccione productos y consulte por WhatsApp.">
+    <meta property="og:type" content="website">
+
+    <title>ARGYAN | Catálogo de Productos</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        forest: '#0a1f14',
+                        'forest-accent': '#1a4d2e',
+                        gold: '#b8860b',
+                        'gold-light': '#d4af37',
+                        sage: '#4a6741',
+                        'warm-gray': '#f5f3ef'
+                    },
+                    fontFamily: {
+                        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="../style/styles.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
+    <!-- Prevenir nueva pestaña en enlaces internos -->
+    <script>
+    (function() {
+        document.addEventListener('click', function(e) {
+            var el = e.target.closest('a');
+            if (!el) return;
+            var href = el.getAttribute('href');
+            if (!href) return;
+            var isExternal = href.match(/^https?:\/\//) && !href.includes(window.location.hostname);
+            var isMailto = href.startsWith('mailto:');
+            var isTel = href.startsWith('tel:');
+            var isHash = href.startsWith('#');
+            if (!isExternal && !isMailto && !isTel && !isHash) {
+                el.removeAttribute('target');
+                el.setAttribute('target', '_self');
+            }
+        }, true);
+    })();
+    </script>
+
+<base target="_blank">
+</head>
+
+<body class="antialiased">
+    <div class="grain-overlay" aria-hidden="true"></div>
+
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:bg-forest focus:text-white focus:px-4 focus:py-2 focus:rounded">
+        Saltar al contenido principal
+    </a>
+
+    <!-- ==================== NAVEGACIÓN ==================== -->
+    <header class="fixed w-full z-50 transition-all duration-500 py-5 nav-glass" id="navbar" role="banner">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 relative">
+            <div class="flex justify-between items-center">
+                <a href="../index.html" class="flex items-center gap-3 group" aria-label="ARGYAN - Volver al inicio">
+                    <div class="w-12 h-12 rounded-full overflow-hidden shadow-lg bg-white flex items-center justify-center ring-2 ring-transparent group-hover:ring-gold/30 transition-all duration-300">
+                        <img src="../assets/sin fondo.png" alt="Logo ARGYAN" class="w-full h-full object-contain p-1" loading="eager" width="48" height="48">
+                    </div>
+                    <div>
+                        <span class="text-xl lg:text-2xl font-bold text-forest font-serif tracking-[0.15em]">ARGYAN</span>
+                        <div class="h-px w-full bg-gradient-to-r from-gold to-transparent mt-0.5"></div>
+                    </div>
+                </a>
+
+                <nav class="hidden lg:flex items-center justify-center gap-14 absolute left-[54%] -translate-x-1/2" role="navigation" aria-label="Navegación principal">
+                    <a href="../index.html#nosotros" class="nav-link">Nosotros</a>
+                    <a href="./catalogo.html" class="nav-link" aria-current="page">Catálogo</a>
+                    <a href="../index.html#contacto" class="px-8 py-3 bg-forest text-white text-sm font-semibold tracking-wider uppercase rounded-sm hover:bg-forest-accent transition-all duration-300 shadow-md hover:shadow-lg">
+                        Contacto
+                    </a>
+                </nav>
+
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleCart()" class="relative p-2 text-forest hover:text-gold transition-colors" aria-label="Carrito de compras" aria-expanded="false" aria-controls="cartSidebar">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                        </svg>
+                        <span id="cartBadge" class="cart-badge hidden" aria-label="Productos en carrito">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <!-- ==================== HERO CATÁLOGO ==================== -->
+        <section class="relative pt-28 pb-16 bg-forest overflow-hidden" aria-label="Encabezado del catálogo">
+            <div class="absolute inset-0 opacity-5 pointer-events-none" aria-hidden="true">
+                <div class="absolute inset-0 hero-pattern"></div>
+            </div>
+            <div class="absolute top-20 right-20 w-72 h-72 bg-gold/5 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+            <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
+                <div class="text-center">
+
+                    <h1 class="text-4xl lg:text-5xl xl:text-6xl font-bold text-white font-serif mb-6 leading-[1.05]">
+                        Nuestro portfolio
+                    </h1>
+                    <div class="gold-line w-32 mx-auto mb-6"></div>
+                    <p class="text-stone-300 text-lg max-w-2xl mx-auto leading-relaxed">
+                     Explore nuestras líneas de negocio. Seleccione los productos de su interés y envíenos su consulta por WhatsApp. Las imágenes son ilustrativas. Consulte por otros productos y presentaciones disponibles.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider" aria-hidden="true"></div>
+
+        <!-- ==================== TABS ==================== -->
+        <nav class="sticky top-[72px] z-40 bg-white/95 backdrop-blur-md border-b border-stone-200" role="tablist" aria-label="Filtros de líneas de negocio">
+            <div class="max-w-7xl mx-auto px-6 lg:px-12">
+                <div class="flex gap-6 lg:gap-10 overflow-x-auto py-4 scrollbar-hide" id="pilarTabs">
+                    <button class="pilar-tab active text-sm font-semibold uppercase tracking-wider pb-2" 
+                            data-pilar="intensiva" onclick="filterPilar('intensiva')" role="tab" aria-selected="true" aria-controls="section-intensiva" id="tab-intensiva">
+                        Línea Intensiva
+                    </button>
+                    <button class="pilar-tab text-sm font-semibold uppercase tracking-wider pb-2" 
+                            data-pilar="almacenados" onclick="filterPilar('almacenados')" role="tab" aria-selected="false" aria-controls="section-almacenados" id="tab-almacenados">
+                        Granos Almacenados
+                    </button>
+                    <button class="pilar-tab text-sm font-semibold uppercase tracking-wider pb-2" 
+                            data-pilar="embalaje" onclick="filterPilar('embalaje')" role="tab" aria-selected="false" aria-controls="section-embalaje" id="tab-embalaje">
+                        Soluciones de Embalaje
+                    </button>
+                    <button class="pilar-tab text-sm font-semibold uppercase tracking-wider pb-2" 
+                            data-pilar="urbanas" onclick="filterPilar('urbanas')" role="tab" aria-selected="false" aria-controls="section-urbanas" id="tab-urbanas">
+                        Control de Plagas Urbanas
+                    </button>
+                    <button class="pilar-tab text-sm font-semibold uppercase tracking-wider pb-2" 
+                            data-pilar="seguridad" onclick="filterPilar('seguridad')" role="tab" aria-selected="false" aria-controls="section-seguridad" id="tab-seguridad">
+                        Seguridad e Higiene
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ==================== PRODUCTOS ==================== -->
+        <section class="py-16 lg:py-20 bg-warm-gray" aria-label="Listado de productos">
+            <div class="max-w-7xl mx-auto px-6 lg:px-12">
+
+                <!-- Línea Intensiva - 15 productos -->
+                <div id="section-intensiva" class="pilar-section" role="tabpanel" aria-labelledby="tab-intensiva">
+                    <header class="mb-10">
+                        <span class="text-gold text-xs font-bold tracking-[0.2em] uppercase block mb-2">Pilar I</span>
+                        <h2 class="text-3xl lg:text-4xl font-bold text-forest font-serif">Línea Intensiva</h2>
+                        <p class="text-stone-500 mt-2 max-w-2xl">15 productos fitosanitarios de alta performance para el manejo intensivo de cultivos.</p>
+                        <div class="gold-line-left mt-4"></div>
+                    </header>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6" id="grid-intensiva"></div>
+                </div>
+
+                <!-- Granos Almacenados - 6 productos -->
+                <div id="section-almacenados" class="pilar-section hidden" role="tabpanel" aria-labelledby="tab-almacenados" hidden>
+                    <header class="mb-10">
+                        <span class="text-gold text-xs font-bold tracking-[0.2em] uppercase block mb-2">Pilar II</span>
+                        <h2 class="text-3xl lg:text-4xl font-bold text-forest font-serif">Granos Almacenados</h2>
+                        <p class="text-stone-500 mt-2 max-w-2xl">6 productos para protección integral de silos, depósitos y transporte de granos.</p>
+                        <div class="gold-line-left mt-4"></div>
+                    </header>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6" id="grid-almacenados"></div>
+                </div>
+
+                <!-- Soluciones de Embalaje - 6 productos -->
+                <div id="section-embalaje" class="pilar-section hidden" role="tabpanel" aria-labelledby="tab-embalaje" hidden>
+                    <header class="mb-10">
+                        <span class="text-gold text-xs font-bold tracking-[0.2em] uppercase block mb-2">Pilar III</span>
+                        <h2 class="text-3xl lg:text-4xl font-bold text-forest font-serif">Soluciones de Embalaje</h2>
+                        <p class="text-stone-500 mt-2 max-w-2xl">6 modelos de bigbags industriales de alta resistencia para productos a granel.</p>
+                        <div class="gold-line-left mt-4"></div>
+                    </header>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6" id="grid-embalaje"></div>
+                </div>
+
+                <!-- Control de Plagas Urbanas -->
+                <div id="section-urbanas" class="pilar-section hidden" role="tabpanel" aria-labelledby="tab-urbanas" hidden>
+                    <header class="mb-10">
+                        <span class="text-gold text-xs font-bold tracking-[0.2em] uppercase block mb-2">Pilar IV</span>
+                        <h2 class="text-3xl lg:text-4xl font-bold text-forest font-serif">Control de Plagas Urbanas</h2>
+                        <p class="text-stone-500 mt-2 max-w-2xl">Soluciones especializadas para entornos urbanos e industriales.</p>
+                        <div class="gold-line-left mt-4"></div>
+                    </header>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6" id="grid-urbanas">
+                        <div class="col-span-full text-center py-16 bg-white rounded-sm border border-stone-200">
+                            <svg class="w-16 h-16 text-stone-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            <p class="text-stone-500 text-lg font-medium">Próximamente disponible</p>
+                            <p class="text-stone-400 text-sm mt-1">Consulte por otras líneas de producto</p>
+                            <a href="../index.html#contacto" class="btn btn-forest mt-6 inline-flex text-sm">Contactar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seguridad e Higiene -->
+                <div id="section-seguridad" class="pilar-section hidden" role="tabpanel" aria-labelledby="tab-seguridad" hidden>
+                    <header class="mb-10">
+                        <span class="text-gold text-xs font-bold tracking-[0.2em] uppercase block mb-2">Pilar V</span>
+                        <h2 class="text-3xl lg:text-4xl font-bold text-forest font-serif">Seguridad e Higiene</h2>
+                        <p class="text-stone-500 mt-2 max-w-2xl">Equipamiento de protección personal e higiene industrial.</p>
+                        <div class="gold-line-left mt-4"></div>
+                    </header>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6" id="grid-seguridad">
+                        <div class="col-span-full text-center py-16 bg-white rounded-sm border border-stone-200">
+                            <svg class="w-16 h-16 text-stone-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                            <p class="text-stone-500 text-lg font-medium">Próximamente disponible</p>
+                            <p class="text-stone-400 text-sm mt-1">Consulte por otras líneas de producto</p>
+                            <a href="../index.html#contacto" class="btn btn-forest mt-6 inline-flex text-sm">Contactar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section><div class="section-divider" aria-hidden="true"></div>
+
+    <!-- ==================== MODAL PRODUCTO ==================== -->
+    <div id="productModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Detalle del producto">
+        <div class="modal-content max-w-4xl">
+            <div class="grid md:grid-cols-5 min-h-[500px]">
+                <div class="md:col-span-2 bg-stone-100 p-6 lg:p-8 flex items-center justify-center relative">
+                    <button onclick="closeModal()" class="absolute top-4 right-4 md:hidden text-stone-400 hover:text-forest transition-colors z-10" aria-label="Cerrar modal">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                    <img id="modalImg" src="" alt="" class="max-h-[350px] w-full object-contain" loading="lazy">
+                </div>
+                <div class="md:col-span-3 p-6 lg:p-10 relative flex flex-col">
+                    <button onclick="closeModal()" class="absolute top-4 right-4 text-stone-400 hover:text-forest transition-colors hidden md:block" aria-label="Cerrar modal">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                    <span id="modalPilar" class="text-gold text-xs font-bold tracking-[0.2em] uppercase block mb-2"></span>
+                    <h3 id="modalTitle" class="text-2xl lg:text-3xl font-bold text-forest font-serif mb-4 pr-8"></h3>
+                    <div class="gold-line-left mb-5"></div>
+                    <p id="modalDesc" class="text-stone-600 leading-relaxed mb-6 text-base lg:text-lg flex-1"></p>
+
+                    <div class="bg-warm-gray rounded-sm p-4 lg:p-5 mb-6 border border-stone-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm font-semibold text-forest uppercase tracking-wider">Cantidad:</span>
+                            <div class="flex items-center gap-3">
+                                <button onclick="adjustModalQty(-1)" class="quantity-btn w-10 h-10 text-lg" aria-label="Disminuir cantidad">−</button>
+                                <span id="modalQty" class="w-12 text-center font-bold text-lg" aria-live="polite">1</span>
+                                <button onclick="adjustModalQty(1)" class="quantity-btn w-10 h-10 text-lg" aria-label="Aumentar cantidad">+</button>
+                            </div>
+                        </div>
+                        <button onclick="addFromModal()" class="w-full btn btn-gold py-3.5 text-sm lg:text-base">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                            Añadir al Carrito
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-3 text-stone-500 text-sm">
+                        <svg class="w-5 h-5 text-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                        </svg>
+                        <span>Finalice su consulta por WhatsApp con un asesor</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- ==================== CARRITO SIDEBAR ==================== -->
+    <div id="cartOverlay" class="cart-overlay" onclick="toggleCart()" aria-hidden="true"></div>
+    <aside id="cartSidebar" class="cart-sidebar" role="dialog" aria-label="Carrito de compras" aria-modal="true">
+        <div class="p-6 border-b border-stone-200 flex items-center justify-between">
+            <h2 class="text-xl font-bold text-forest font-serif">Carrito</h2>
+            <button onclick="toggleCart()" class="text-stone-400 hover:text-forest transition-colors" aria-label="Cerrar carrito">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <div id="cartItems" class="flex-1 overflow-y-auto p-6">
+            <p class="text-stone-500 text-center py-8">El carrito está vacío</p>
+        </div>
+        <div class="p-6 border-t border-stone-200">
+            <button onclick="finalizePurchase()" class="w-full btn btn-forest" id="checkoutBtn" disabled>
+                Finalizar Consulta
+            </button>
+        </div>
+    </aside>
+
+    <script src="../main.js" defer></script>
+    <!-- BOTÓN FLOTANTE WHATSAPP -->
+<a 
+    href="https://wa.me/5493515333794" 
+    target="_blank" 
+    aria-label="WhatsApp"
+    class="fixed bottom-6 right-6 z-[9999] w-16 h-16 rounded-full bg-[#25D366] flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300"
+>
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        viewBox="0 0 32 32" 
+        fill="white" 
+        class="w-8 h-8"
+    >
+        <path d="M16 .396C7.163.396 0 7.559 0 16.396c0 2.82.737 5.575 2.137 8.01L0 32l7.83-2.052a15.93 15.93 0 0 0 8.17 2.248c8.837 0 16-7.163 16-16S24.837.396 16 .396zm0 29.02a13.03 13.03 0 0 1-6.64-1.817l-.474-.281-4.648 1.218 1.24-4.53-.309-.465a13.02 13.02 0 1 1 10.83 5.875zm7.146-9.77c-.39-.195-2.31-1.14-2.67-1.27-.36-.13-.622-.195-.884.195-.26.39-1.014 1.27-1.243 1.53-.228.26-.455.292-.845.097-.39-.195-1.647-.607-3.14-1.937-1.16-1.034-1.944-2.31-2.173-2.7-.228-.39-.024-.6.17-.794.175-.174.39-.455.585-.682.195-.227.26-.39.39-.65.13-.26.065-.487-.032-.682-.097-.195-.884-2.13-1.21-2.917-.317-.76-.64-.655-.884-.667l-.754-.013c-.26 0-.682.097-1.04.487-.357.39-1.364 1.332-1.364 3.245 0 1.912 1.397 3.76 1.592 4.02.195.26 2.75 4.2 6.66 5.887.93.402 1.655.642 2.22.822.932.296 1.78.254 2.45.154.747-.112 2.31-.944 2.635-1.857.325-.912.325-1.695.227-1.857-.097-.162-.357-.26-.747-.455z"/>
+    </svg>
+</a>
+</body>
+</html>

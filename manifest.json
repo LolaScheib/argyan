@@ -1,0 +1,25 @@
+{
+  "name": "ARGYAN Soluciones Agroindustriales",
+  "short_name": "ARGYAN",
+  "description": "Soluciones agroindustriales integrales. 15 años de trayectoria en Córdoba, Argentina.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#faf8f3",
+  "theme_color": "#1a4d2e",
+  "orientation": "portrait",
+  "scope": ".",
+  "icons": [
+    {
+      "src": "./assets/sin-fondo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/sin-fondo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

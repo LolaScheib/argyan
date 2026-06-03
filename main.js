@@ -1,620 +1,432 @@
-// ==================== PREVENCIÓN NUEVA PESTAÑA ====================
-// Fuerza que todos los enlaces internos abran en la misma pestaña
-(function() {
-    document.addEventListener('click', function(e) {
-        var el = e.target.closest('a');
-        if (!el) return;
-
-        var href = el.getAttribute('href');
-        if (!href) return;
-
-        var isExternal = href.match(/^https?:\/\//) && !href.includes(window.location.hostname);
-        var isMailto = href.startsWith('mailto:');
-        var isTel = href.startsWith('tel:');
-        var isHash = href.startsWith('#');
-
-        if (!isExternal && !isMailto && !isTel && !isHash) {
-            el.removeAttribute('target');
-            el.setAttribute('target', '_self');
-        }
-    }, true);
-})();
-
-/**
- * ARGYAN - Sistema JavaScript Optimizado
- * Módulos: Navegación, Acordeón, Formulario, Animaciones, Catálogo, Carrito, Mapa
- * @version 2.0
- */
+/* =========================================================
+   ARGYAN · main.js · Optimizado · Junio 2026
+   ========================================================= */
 
 'use strict';
 
-// ==================== UTILIDADES ====================
-const $ = (selector, context = document) => context.querySelector(selector);
-const $$ = (selector, context = document) => Array.from(context.querySelectorAll(selector));
-const debounce = (fn, delay = 100) => {
-    let timer;
-    return (...args) => {
-        clearTimeout(timer);
-        timer = setTimeout(() => fn.apply(this, args), delay);
-    };
+/* ==================== CONFIG ==================== */
+const ARGYAN_CONFIG = {
+    whatsappNumber: '5493515333794',
+    storageKey: 'argyan_cart_v1',
+    version: '2026.06'
 };
 
-// ==================== NAVEGACIÓN ====================
-const Navigation = {
-    init() {
-        this.navbar = $('#navbar');
-        this.mobileMenu = $('#mobile-menu');
-        this.mobileOverlay = $('#mobile-overlay');
-        this.menuBtn = $('#mobile-menu-btn');
+/* ==================== UTILS ==================== */
+const $ = (s, c = document) => c.querySelector(s);
+const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
+const isCatalog = () => Boolean($('#grid-intensiva'));
 
-        if (!this.navbar) return;
+/* ==================== NAV SCROLL ==================== */
+const nav = $('#nav');
+if (nav) {
+    window.addEventListener('scroll', () => {
+        nav.classList.toggle('scrolled', window.scrollY > 30);
+    }, { passive: true });
+}
 
-        let ticking = false;
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                requestAnimationFrame(() => {
-                    this.handleScroll();
-                    ticking = false;
-                });
-                ticking = true;
+/* ==================== MOBILE MENU ==================== */
+const menuBtn = $('#menuBtn');
+const navLinks = $('.nav-links');
+if (menuBtn && navLinks) {
+    let open = false;
+    menuBtn.addEventListener('click', () => {
+        open = !open;
+        if (open) {
+            navLinks.style.cssText = 'display:flex !important;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:#faf8f3;padding:24px;border-bottom:1px solid rgba(26,77,46,.12);gap:20px;align-items:flex-start;z-index:100';
+            menuBtn.textContent = '✕';
+            menuBtn.setAttribute('aria-label', 'Cerrar menú');
+        } else {
+            navLinks.removeAttribute('style');
+            menuBtn.textContent = '☰';
+            menuBtn.setAttribute('aria-label', 'Abrir menú');
+        }
+    });
+    navLinks.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+            if (open) {
+                navLinks.removeAttribute('style');
+                menuBtn.textContent = '☰';
+                menuBtn.setAttribute('aria-label', 'Abrir menú');
+                open = false;
             }
-        }, { passive: true });
-
-        $$('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', (e) => {
-                const href = anchor.getAttribute('href');
-                if (href === '#') return;
-
-                const target = $(href);
-                if (target) {
-                    e.preventDefault();
-                    const offset = 80;
-                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
-                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-                }
-            });
         });
-    },
-
-    handleScroll() {
-        const scrolled = window.scrollY > 30;
-        this.navbar.classList.toggle('shadow-sm', scrolled);
-        this.navbar.style.padding = scrolled ? '0.75rem 0' : '1.25rem 0';
-    }
-};
-
-// ==================== MENÚ MÓVIL ====================
-function toggleMobileMenu() {
-    const menu = $('#mobile-menu');
-    const overlay = $('#mobile-overlay');
-    const btn = $('#mobile-menu-btn');
-
-    if (!menu || !overlay) return;
-
-    const isOpen = menu.classList.toggle('active');
-    overlay.classList.toggle('hidden', !isOpen);
-    document.body.style.overflow = isOpen ? 'hidden' : '';
-
-    if (btn) {
-        btn.setAttribute('aria-expanded', isOpen.toString());
-    }
+    });
 }
 
-// ==================== ACORDEÓN ====================
-function toggleAccordion(header) {
-    const body = header.nextElementSibling;
-    const isOpen = body.classList.contains('open');
-    const allBodies = $$('.accordion-body');
-    const allHeaders = $$('.accordion-header');
-
-    allBodies.forEach(b => {
-        b.style.maxHeight = null;
-        b.classList.remove('open');
+/* ==================== REVEAL ON SCROLL ==================== */
+const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            revealObserver.unobserve(e.target);
+        }
     });
-    allHeaders.forEach(h => {
-        h.classList.remove('active');
-        h.setAttribute('aria-expanded', 'false');
-    });
+}, { threshold: .15 });
+$$('.reveal').forEach(el => revealObserver.observe(el));
 
-    if (!isOpen && body) {
-        body.classList.add('open');
-        header.classList.add('active');
-        header.setAttribute('aria-expanded', 'true');
-        body.style.maxHeight = body.scrollHeight + 'px';
-    }
-}
-
-// ==================== FORMULARIO ====================
-const FormHandler = {
-    WHATSAPP_NUMBER: '5493515333794',
-
-    init() {
-        const form = $('#contactForm');
-        if (!form) return;
-
-        form.addEventListener('submit', (e) => this.handleSubmit(e));
-    },
-
-    handleSubmit(e) {
+/* ==================== FORM → WHATSAPP (index.html) ==================== */
+const contactForm = $('#contactForm');
+if (contactForm) {
+    contactForm.addEventListener('submit', e => {
         e.preventDefault();
-        const form = e.target;
-
-        if (!form.checkValidity()) {
-            form.reportValidity();
+        if (!contactForm.checkValidity()) {
+            contactForm.reportValidity();
             return;
         }
-
         const data = {
             nombre: $('#nombre')?.value.trim() || '',
-            empresa: $('#empresa')?.value.trim() || '',
+            empresa: $('#empresa')?.value.trim() || 'sin empresa',
             email: $('#email')?.value.trim() || '',
-            telefono: $('#telefono')?.value.trim() || '',
-            linea: $('#linea')?.selectedOptions[0]?.text || '',
+            telefono: $('#telefono')?.value.trim() || 'no especificado',
+            linea: $('#linea')?.value || 'no especificada',
             mensaje: $('#mensaje')?.value.trim() || ''
         };
+        const msg = `Hola! Soy ${data.nombre}, de ${data.empresa}.%0A%0A` +
+                    `Email: ${data.email}%0A` +
+                    `Tel: ${data.telefono}%0A` +
+                    `Línea: ${data.linea}%0A%0A` +
+                    (data.mensaje ? `Mensaje: ${encodeURIComponent(data.mensaje)}` : 'Quiero hacer una consulta desde la web de ARGYAN.');
+        window.location.href = `https://wa.me/${ARGYAN_CONFIG.whatsappNumber}?text=${msg}`;
+    });
+}
 
-        const successMsg = $('#formSuccess');
-        if (successMsg) {
-            successMsg.classList.remove('hidden');
-        }
-
-        const texto = this.buildWhatsAppMessage(data);
-        const url = `https://wa.me/${this.WHATSAPP_NUMBER}?text=${encodeURIComponent(texto)}`;
-
-        setTimeout(() => {
-            window.open(url, '_blank', 'noopener,noreferrer');
-            if (successMsg) successMsg.classList.add('hidden');
-            form.reset();
-        }, 400);
-    },
-
-    buildWhatsAppMessage(data) {
-        return `Hola, quiero hacer una consulta desde la web de ARGYAN.\n\n` +
-               `Nombre y Apellido: ${data.nombre}\n` +
-               `Empresa / Institución: ${data.empresa || '-'}\n` +
-               `Correo Electrónico: ${data.email}\n` +
-               `Teléfono: ${data.telefono || '-'}\n` +
-               `Línea de Interés: ${data.linea}\n` +
-               `Mensaje: ${data.mensaje || '-'}`;
-    }
+/* ==================== CATÁLOGO ==================== */
+const pilarNames = {
+    intensiva: 'Línea Intensiva',
+    almacenados: 'Granos Almacenados',
+    embalaje: 'Soluciones de Embalaje',
+    urbanas: 'Control de Plagas',
+    seguridad: 'Seguridad e Higiene',
+    faq: 'Preguntas Frecuentes'
 };
 
-// ==================== ANIMACIONES GSAP ====================
-const Animations = {
-    init() {
-        if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-            console.warn('GSAP no disponible, animaciones desactivadas');
-            this.fallbackReveal();
-            return;
-        }
-
-        gsap.registerPlugin(ScrollTrigger);
-        this.initRevealAnimations();
-        this.initHeroAnimations();
-        this.initCounterAnimation();
-    },
-
-    initRevealAnimations() {
-        $$('.reveal-up').forEach((element, i) => {
-            gsap.fromTo(element,
-                { opacity: 0, y: 50 },
-                {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.9,
-                    ease: 'power3.out',
-                    scrollTrigger: {
-                        trigger: element,
-                        start: 'top 88%',
-                        toggleActions: 'play none none reverse'
-                    },
-                    delay: (i % 3) * 0.1
-                }
-            );
-        });
-    },
-
-    initHeroAnimations() {
-        const hero = $('.hero-bg');
-        if (!hero) return;
-
-        const h1 = hero.querySelector('h1');
-        const p = hero.querySelector('p');
-        const cta = hero.querySelector('.flex');
-
-        if (h1) gsap.fromTo(h1, { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out', delay: 0.3 });
-        if (p) gsap.fromTo(p, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.6 });
-        if (cta) gsap.fromTo(cta, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.9 });
-    },
-
-    initCounterAnimation() {
-        const counterEl = $('#counter-years');
-        if (!counterEl) return;
-
-        gsap.to(counterEl, {
-            innerHTML: 15,
-            duration: 2.5,
-            ease: 'power2.out',
-            snap: { innerHTML: 1 },
-            scrollTrigger: {
-                trigger: counterEl,
-                start: 'top 85%'
-            },
-            onUpdate() {
-                counterEl.innerHTML = Math.round(this.targets()[0].innerHTML) + '+';
-            }
-        });
-    },
-
-    fallbackReveal() {
-        $$('.reveal-up').forEach(el => {
-            el.style.opacity = '1';
-            el.style.transform = 'none';
-        });
-    }
+const products = {
+    intensiva: [
+        { id: 'int-1', name: '2-4 Amina', desc: 'Herbicida sistémico selectivo para el control de malezas de hoja ancha en cultivos extensivos.', img: './assets/LINEAINTENSIVA1.webp' },
+        { id: 'int-2', name: 'Cletodim 24', desc: 'Graminicida selectivo post-emergente para el control de gramíneas anuales y perennes.', img: './assets/LINEAINTENSIVA2.png' },
+        { id: 'int-3', name: 'Glifosato', desc: 'Herbicida sistémico no selectivo de amplio espectro. Ideal para barbecho químico.', img: './assets/LINEAINTENSIVA3.webp' },
+        { id: 'int-4', name: 'Dimetoato', desc: 'Insecticida organofosforado sistémico para control de insectos chupadores y masticadores.', img: './assets/LINEAINTENSIVA4.webp' },
+        { id: 'int-5', name: 'Paraquat', desc: 'Herbicida de contacto no selectivo de acción rápida. Desecante pre-cosecha.', img: './assets/LINEAINTENSIVA5.webp' },
+        { id: 'int-6', name: 'Dicamba', desc: 'Herbicida sistémico selectivo para control de malezas de hoja ancha en gramíneas.', img: './assets/LINEAINTENSIVA6.webp' },
+        { id: 'int-7', name: 'Haloxy 54', desc: 'Herbicida selectivo post-emergente para control de malezas de hoja ancha en soja.', img: './assets/LINEAINTENSIVA7.webp' },
+        { id: 'int-8', name: 'S-Metolaclor', desc: 'Herbicida selectivo pre-emergente para control de gramíneas y malezas de hoja ancha.', img: './assets/LINEAINTENSIVA8.webp' },
+        { id: 'int-9', name: 'Abamectina 3,6', desc: 'Acaricida-insecticida biológico de amplio espectro para ácaros, trips y minadores.', img: './assets/LINEAINTENSIVA9.webp' },
+        { id: 'int-10', name: 'Bifentrin 25', desc: 'Insecticida piretroide de amplio espectro y alta persistencia.', img: './assets/LINEAINTENSIVA10.webp' },
+        { id: 'int-11', name: 'Cipermetrina', desc: 'Insecticida piretroide sintético de acción rápida contra lepidópteros y coleópteros.', img: './assets/LINEAINTENSIVA11.webp' },
+        { id: 'int-12', name: 'Imidacloprid 35', desc: 'Insecticida sistémico neonicotinoide. Control de pulgones, mosca blanca y trips.', img: './assets/LINEAINTENSIVA12.webp' },
+        { id: 'int-13', name: 'Lambda ME 25', desc: 'Insecticida piretroide microencapsulado de alta eficacia contra orugas y grillos.', img: './assets/LINEAINTENSIVA13.webp' },
+        { id: 'int-14', name: 'Fipronil', desc: 'Insecticida fenilpirazol de amplio espectro. Control de hormigas y grillos del suelo.', img: './assets/LINEAINTENSIVA14.webp' },
+        { id: 'int-15', name: 'Coadyuvantes Siliconados', desc: 'Agentes de mejora para aplicación de fitosanitarios. Reducen tensión superficial.', img: './assets/LINEAINTENSIVA15.webp' }
+    ],
+    almacenados: [
+        { id: 'ga-1', name: 'Deltametrina 2,5% + Butóxido de Piperonilo', desc: 'Piretroide líquido insecticida gorgojicida. Garantiza el control total de insectos en granos y silos, depósitos, instalaciones, transportes, semillas, subproductos de la industria molinera y alimentos balanceados. De muy baja toxicidad para personas, animales y el medio ambiente. No es corrosivo. Capacidad de control y poder de desalojo. Dosis 12 a 22 cc/ton. Lea la etiqueta.', img: './assets/ALM1.webp' },
+        { id: 'ga-2', name: 'Pirimifos Metil 50', desc: 'Fosforado de baja toxicidad para el hombre. Amplio espectro y persistencia. Acción fumigante y de contacto. Se emplea para el tratamiento de granos y semillas, almacenados en bolsas o granel, instalaciones y transporte. Protección hasta 1 año. Dosis 10 cc/ton de grano. Lea la etiqueta.', img: './assets/ALM2.webp' },
+        { id: 'ga-3', name: 'Deltametrina 0,15% Polvo', desc: 'Piretroide en polvo insecticida gorgojicida alifático. Control en granos, silos y transportes. De idénticas cualidades que la presentación en forma líquida. Dosis 200 a 330 grs por ton de grano, estibas y galpones. Lea la etiqueta.', img: './assets/ALM3.webp' },
+        { id: 'ga-4', name: 'Mercaptothion 100', desc: 'Organofosforado que actúa por contacto e ingestión. Se absorbe a través de los lípidos del caparazón de los insectos, con escasa persistencia en el medio ambiente. Amplio espectro de control y acción residual. Su estabilidad a la luz y persistencia permite controlar reinfestaciones. Dosis 10-20 cc/ton. Lea la etiqueta.', img: './assets/ALM4.webp' },
+        { id: 'ga-5', name: 'Fosfuro de Aluminio 57%', desc: 'Fumigante para control de insectos en granos almacenados. Alta eficacia en silos y depósitos cerrados. Presentaciones: Tubitos de 30 pastillas (envases x 16 tubitos). Garrafa granel 500 pastillas. Blisters hidrófugos para contenedores marítimos. Genera gas fosfina. Protege granos, cereales, semillas, legumbres, y demás alimentos almacenados en silos, silo bolsa, estibas, de polillas, ácaros, gorgojos y roedores. Lea la etiqueta.', img: './assets/ALM5.png' },
+        { id: 'ga-6', name: 'Desodorante-Bactericida', desc: 'Múltiple acción simultánea: desodoriza, desinfecta y desengrasa. Elimina cucarachas, gérmenes, hongos y bacterias que le transmiten mal olor al grano. No puede ser usado en grano que se destina al consumo humano. Dosis 1 litro/100 litros de agua/ 100 ton de grano. Lea la etiqueta.', img: './assets/ALM6.webp' }
+    ],
+    embalaje: [
+        { id: 'bb-1', name: 'Boca Abierta - Fondo Ciego', desc: 'Big bag de boca abierta y fondo ciego para almacenamiento y transporte de productos a granel. Fabricado en polipropileno de alta resistencia con tratamiento UV, diseñado para el almacenamiento y transporte seguro de productos a granel.', img: './assets/bigbag1.webp' },
+        { id: 'bb-2', name: 'Válvula Carga - Fondo Ciego', desc: 'Big bag con válvula de carga superior y fondo ciego. Permite llenado controlado y seguro. Fabricado en polipropileno de alta resistencia con tratamiento UV, diseñado para el almacenamiento y transporte seguro de productos a granel.', img: './assets/bigbag2.png' },
+        { id: 'bb-3', name: 'Pollera Carga - Fondo Ciego', desc: 'Big bag con pollera de carga superior amplia para llenado rápido y seguro. Fabricado en polipropileno de alta resistencia con tratamiento UV, diseñado para el almacenamiento y transporte seguro de productos a granel.', img: './assets/bigbag3.png' },
+        { id: 'bb-4', name: 'Boca Abierta - Válvula Descarga', desc: 'Big bag de boca abierta con válvula inferior de descarga. Facilita el vaciado controlado. Fabricado en polipropileno de alta resistencia con tratamiento UV, diseñado para el almacenamiento y transporte seguro de productos a granel.', img: './assets/bigbag4.webp' },
+        { id: 'bb-5', name: 'Válvula Carga y Descarga', desc: 'Big bag con válvula superior de carga y válvula inferior de descarga. Sistema completo. Fabricado en polipropileno de alta resistencia con tratamiento UV, diseñado para el almacenamiento y transporte seguro de productos a granel.', img: './assets/bigbag5.webp' },
+        { id: 'bb-6', name: 'Pollera Carga - Válvula Descarga', desc: 'Big bag con pollera de carga superior amplia y válvula de descarga inferior. Fabricado en polipropileno de alta resistencia con tratamiento UV, diseñado para el almacenamiento y transporte seguro de productos a granel.', img: './assets/bigbag6.png' },
+        { id: 'bb-7', name: 'Bolsas Laminadas', desc: 'Big Bag fabricado en polipropileno de alta resistencia con tratamiento UV, diseñado para el almacenamiento y transporte seguro de productos a granel. Su recubrimiento interno mediante película de polipropileno evita la pérdida de partículas micronizadas, brindando mayor protección al contenido.', img: './assets/bigbag7.png' },
+        { id: 'bb-8', name: 'Segunda Selección', desc: 'Big bags y embalajes de segunda selección en excelente estado. Opción económica. Fabricado en polipropileno de alta resistencia con tratamiento UV, diseñado para el almacenamiento y transporte seguro de productos a granel.', img: './assets/bigbag8.png' }
+    ],
+    urbanas: [
+        { id: 'urb-1', name: 'Raticida en Bloques', desc: 'Cebo sólido en bloques para control de roedores. Formulación anticoagulante de alta eficacia.', img: './assets/urbanas1.webp' },
+        { id: 'urb-2', name: 'Raticida en Pellets', desc: 'Gránulos atrayentes para control de roedores. Presentación dispersable en áreas de difícil acceso.', img: './assets/urbanas2.webp' },
+        { id: 'urb-3', name: 'Trampa para moscas Fly Hunt', desc: 'Trampa ecológica y reutilizable que ayuda a reducir poblaciones de moscas.', img: './assets/urbanas3.webp' },
+        { id: 'urb-5', name: 'Repelente para Mamíferos', desc: 'Formulación líquida para alejar mamíferos no deseados. Presentación concentrado emulsionable.', img: './assets/urbanas5.webp' }
+    ],
+    seguridad: [
+        { id: 'seg-1', name: 'Guante Gamisol 1100-TAC', desc: 'G13 algodón moteado con micromotas. Código: 1.175.', img: './assets/seguridad1.webp' },
+        { id: 'seg-2', name: 'Guante URK 1018 MILCOLOR', desc: 'Gris moteado. Bolsa por 300 pares. Código: 1.3.', img: './assets/seguridad2.webp' },
+        { id: 'seg-3', name: 'Guante Gamisol 1100A G-7', desc: 'Moteado pesado. Código: 1.5.', img: './assets/seguridad3.webp' },
+        { id: 'seg-4', name: 'Guante medio paseo SG GV05', desc: 'Código 1.168 al 1.24. Talle 8. Color amarillo.', img: './assets/seguridad4.webp' },
+        { id: 'seg-4-1', name: 'Guante Nitrilo Verde', desc: 'MAPA AF-492. Largo 32 cm. Espesor 0,38 cm. Talles 7-11.', img: './assets/seguridad4_1.webp' },
+        { id: 'seg-5', name: 'Anteojo STEELPRO NITRO', desc: 'Anteojo de seguridad con patilla regulable. Disponible claro y oscuro.', img: './assets/SEGURIDAD5.webp' },
+        { id: 'seg-6', name: 'Anteojo LIBUS ARGON', desc: 'Anteojo de seguridad HC con patilla regulable.', img: './assets/seguridad6.webp' },
+        { id: 'seg-7', name: 'Antiparra STEELPRO ZEX', desc: 'Antiparra antiempañante disponible claro y oscuro.', img: './assets/SEGURIDAD7.webp' },
+        { id: 'seg-8', name: 'Máscara de Rostro Completo', desc: 'Máscara para fumigación y manejo de agroquímicos. Silicona, visor panorámico.', img: './assets/SEGURIDAD8.webp' },
+        { id: 'seg-9', name: 'Filtro VO Tipo A1', desc: 'Filtro contra vapores orgánicos. Conexión bayoneta universal. Precio por par.', img: './assets/SEGURIDAD9.webp' },
+        { id: 'seg-10', name: 'Mamelucos DUPONT', desc: 'Protección contra polvo, suciedad y partículas de materiales peligrosos.', img: './assets/SEGURIDAD10.webp' }
+    ]
 };
 
-// ==================== CATÁLOGO - DATOS ====================
-const ProductCatalog = {
-    pilarNames: {
-        intensiva: 'Línea Intensiva',
-        almacenados: 'Granos Almacenados',
-        embalaje: 'Soluciones de Embalaje',
-        urbanas: 'Control de Plagas Urbanas',
-        seguridad: 'Seguridad e Higiene'
-    },
-
-    products: {
-        intensiva: [
-            { id: 'int-1', name: '2-4 Amina', desc: 'Herbicida sistémico selectivo para el control de malezas de hoja ancha en cultivos extensivos. Eficaz en trigo, maíz y soja.', img: '../assets/LINEAINTENSIVA1.png' },
-            { id: 'int-2', name: 'Cletodim 24', desc: 'Graminicida selectivo post-emergente para el control de gramíneas anuales y perennes en cultivos de hoja ancha.', img: '../assets/LINEAINTENSIVA2.png' },
-            { id: 'int-3', name: 'Glifosato', desc: 'Herbicida sistémico no selectivo de amplio espectro. Elimina malezas de hoja ancha y gramíneas. Ideal para barbecho químico.', img: '../assets/LINEAINTENSIVA3.png' },
-            { id: 'int-4', name: 'Dimetoato', desc: 'Insecticida organofosforado sistémico para control de insectos chupadores y masticadores en cultivos intensivos.', img: '../assets/LINEAINTENSIVA4.png' },
-            { id: 'int-5', name: 'Paraquat', desc: 'Herbicida de contacto no selectivo de acción rápida. Desecante pre-cosecha y control de malezas emergidas.', img: '../assets/LINEAINTENSIVA5.png' },
-            { id: 'int-6', name: 'Dicamba', desc: 'Herbicida sistémico selectivo para control de malezas de hoja ancha en cultivos de gramíneas. Compatible con glifosato.', img: '../assets/LINEAINTENSIVA6.png' },
-            { id: 'int-7', name: 'Haloxy 54', desc: 'Herbicida selectivo post-emergente para control de malezas de hoja ancha en soja y otros cultivos leguminosos.', img: '../assets/LINEAINTENSIVA7.png' },
-            { id: 'int-8', name: 'S-Metolaclor', desc: 'Herbicida selectivo pre-emergente para control de gramíneas y algunas malezas de hoja ancha en maíz y soja.', img: '../assets/LINEAINTENSIVA8.png' },
-            { id: 'int-9', name: 'Abamectina 3,6', desc: 'Acaricida-insecticida biológico de amplio espectro. Control de ácaros, trips y minadores en cultivos frutales y hortícolas.', img: '../assets/LINEAINTENSIVA9.png' },
-            { id: 'int-10', name: 'Bifentrin 25', desc: 'Insecticida piretroide de amplio espectro y alta persistencia. Control de insectos masticadores y chupadores en múltiples cultivos.', img: '../assets/LINEAINTENSIVA10.png' },
-            { id: 'int-11', name: 'Cipermetrina', desc: 'Insecticida piretroide sintético de acción rápida. Eficaz contra lepidópteros, coleópteros y hemípteros en cultivos extensivos.', img: '../assets/LINEAINTENSIVA11.png' },
-            { id: 'int-12', name: 'Imidacloprid 35', desc: 'Insecticida sistémico neonicotinoide. Control de pulgones, mosca blanca y trips con persistencia prolongada.', img: '../assets/LINEAINTENSIVA12.png' },
-            { id: 'int-13', name: 'Lambda ME 25', desc: 'Insecticida piretroide microencapsulado de alta eficacia. Control de orugas, grillos y otros insectos masticadores.', img: '../assets/LINEAINTENSIVA13.png' },
-            { id: 'int-14', name: 'Fipronil', desc: 'Insecticida fenilpirazol de amplio espectro. Control de hormigas, grillos y otros insectos del suelo. Presentaciones 50cc y 1000cc.', img: '../assets/LINEAINTENSIVA14.png' },
-            { id: 'int-15', name: 'Coadyuvantes Siliconados', desc: 'Agentes de mejora para aplicación de fitosanitarios. Reducen tensión superficial y mejoran penetración. Presentaciones 250cc y 1000cc.', img: '../assets/LINEAINTENSIVA15.png' }
-        ],
-        almacenados: [
-            { id: 'ga-1', name: 'Deltametrina 2,5% + Butóxido', desc: 'Piretroide líquido insecticida gorgojicida. Control total de insectos en granos, silos, depósitos e instalaciones. Dosis 12 a 20 cc/ton.', img: '../assets/ALM1.png' },
-            { id: 'ga-2', name: 'Pirimifos Metil', desc: 'Organofosforado de baja toxicidad. Amplio espectro y persistencia. Acción fumigante y contacto. Para tratamiento de granos y semillas. Dosis 10cc/ton.', img: '../assets/ALM2.png' },
-            { id: 'ga-3', name: 'Deltametrina 0,15% Polvo', desc: 'Piretroide en polvo insecticida gorgojicida alifático. Control en granos, silos, transportes, semillas e instalaciones. Dosis: 200 a 330gr/ton.', img: '../assets/ALM3.png' },
-            { id: 'ga-4', name: 'Mercaptothion 10%', desc: 'Organofosforado que actúa por contacto e ingestión. Se absorbe a través de los lípidos del caparazón de los insectos. Dosis 10-20cc/ton.', img: '../assets/ALM4.png' },
-            { id: 'ga-6', name: 'Desodorante-Bactericida', desc: 'Múltiple acción: desodoriza, desinfecta y desengrasa. Elimina cucarachas, gérmenes, hongos y bacterias. Dosis 1 litro/100 litros de agua/100 ton.', img: '../assets/ALM6.png' },
-         ],
-        embalaje: [
-            { id: 'bb-1', name: 'Boca Abierta - Fondo Ciego', desc: 'Big bag de boca abierta y fondo ciego para almacenamiento y transporte de productos a granel. Ideal para granos, fertilizantes y semillas.', img: '../assets/bigbag1.png' },
-            { id: 'bb-2', name: 'Válvula Carga - Fondo Ciego', desc: 'Big bag con válvula de carga superior y fondo ciego. Permite llenado controlado y seguro. Perfecto para operaciones automatizadas.', img: '../assets/bigbag2.png' },
-            { id: 'bb-3', name: 'Pollera Carga - Fondo Ciego', desc: 'Big bag con pollera de carga superior amplia para llenado rápido y seguro. Fondo ciego para máxima contención.', img: '../assets/bigbag3.png' },
-            { id: 'bb-4', name: 'Boca Abierta - Válvula Descarga', desc: 'Big bag de boca abierta con válvula inferior de descarga. Facilita el vaciado controlado del contenido.', img: '../assets/bigbag4.png' },
-            { id: 'bb-5', name: 'Válvula Carga y Descarga', desc: 'Big bag con válvula superior de carga y válvula inferior de descarga. Sistema completo para carga y descarga controlada.', img: '../assets/bigbag5.png' },
-            { id: 'bb-6', name: 'Pollera Carga - Válvula Descarga', desc: 'Big bag con pollera de carga superior amplia y válvula de descarga inferior. Máxima versatilidad para carga rápida y descarga controlada.', img: '../assets/bigbag6.png' },
-        ],
-urbanas: [
-            { id: 'urb-1', name: 'Raticida en Bloques', desc: 'Cebo sólido en bloques para control de roedores. Formulación anticoagulante de alta eficacia. Uso exterior e interior.', img: '../assets/urbanas1.png' },
-            { id: 'urb-2', name: 'Raticida en Pellets', desc: 'Gránulos atrayentes para control de roedores. Presentación dispersable en áreas de difícil acceso. Efecto prolongado.', img: '../assets/urbanas2.png' },
-            { id: 'urb-3', name: 'Trampa Adhesiva', desc: 'Lámina con adhesivo de alta resistencia y atrayente feromónico para captura de insectos voladores y rastreros. Uso interior y exterior.', img: '../assets/urbanas3.png' },
-            { id: 'urb-4', name: 'Atrayente para Moscas', desc: 'Cebo líquido concentrado para captura de moscas en trampas. Acción prolongada con atrayente alimenticio.', img: '../assets/urbanas4.png' },
-            { id: 'urb-5', name: 'Repelente para Mamíferos', desc: 'Formulación granulada o líquida para alejar mamíferos no deseados. Aplicación en jardines, campos y perímetros.', img: '../assets/urbanas5.png' },
-        ],
-                seguridad: [
-    { id: 'seg-1', name: 'Guante Gamisol 1100-TAC', desc: 'G13 algodón moteado con micromotas. Código: 1.175', img: '' },
-    { id: 'seg-2', name: 'Guante URK 1018 MILCOLOR', desc: 'Gris moteado. Bolsa por 300 pares. Código: 1.3', img: '' },
-    { id: 'seg-3', name: 'Guante Gamisol 1100A G-7', desc: 'Moteado pesado. Código: 1.5', img: '' },
-    { id: 'seg-4', name: 'Guante Americano Puño Corto', desc: 'Combinado con jeans en dorso. Talle 10. Código: 1.17', img: '' },
-    { id: 'seg-5', name: 'Guante Descarne SG GD05', desc: 'Puño corto T10 sello S. Código: 1.15', img: '' },
-    { id: 'seg-6', name: 'Guante Medio Paseo DP 221023', desc: 'RIB amarillo sello S. Talle 8. Código: 1.18', img: '' },
-    { id: 'seg-7', name: 'Guante Soldador STEELPRO', desc: 'C/hilo kevlar, c/refuerzo en palma. Código: 1.27', img: '' },
-    { id: 'seg-8', name: 'Guante Soldado Gamisol 9119', desc: 'Terry aramida vaqueta ambidiestro. Código: 1.28', img: '' },
-    { id: 'seg-9', name: 'Guante PVC/Nitrilo Azul GUPLASTEX 601-T', desc: 'Puño tejido dorso ventilado. Código: 1.190', img: '' },
-    { id: 'seg-10', name: 'Guante PVC Rojo GUPLASTEX 102-L', desc: 'Liviano puño tejido baño completo. Largo: 25 cm. Código: 1.40', img: '' },
-    { id: 'seg-11', name: 'Guante PVC Azul DPS 31755', desc: 'Baño completo. Talle 10, largo: 70 cm. Código: 1.199', img: '' },
-    { id: 'seg-12', name: 'Guante Látex MAPA VITAL 124', desc: 'Talles 6-9. Color amarillo. Código: 1.43 al 1.46', img: '' },
-    { id: 'seg-13', name: 'Guante Nitrilo Verde MAPA AF-492', desc: 'Largo: 32 cm, espesor: 0,38 cm. Talles 7-11. Código: 1.51 al 1.55', img: '' },
-    { id: 'seg-14', name: 'Guante Poliuretano MAPA ULTRANE 548', desc: 'Talles 8-10. Color negro. Código: 1.69 al 1.71', img: '' },
-    { id: 'seg-15', name: 'Guante Anticorte MAPA KRYNIT 582', desc: 'Grado 5, baño nitrilo dorso completo. Talles 9 y 10. Código: 1.194/195', img: '' },
-    { id: 'seg-16', name: 'Guante PU1011 PROINMAX G13', desc: 'Negro recubierto en PU. Talles 7-10. Caja x 240 pares. Código: 1.156/157/158', img: '' },
-    { id: 'seg-17', name: 'Guante L2011 PROINMAX G13', desc: 'Rojo recubierto en látex negro. Talles 8-10. Caja x 240 pares. Código: 1.223/224', img: '' },
-    { id: 'seg-18', name: 'Guante CN5641 PROINMAX G18', desc: 'Doble baño de nitrilo arenoso. Anticorte Nivel 5, Clase D. Caja x 120 pares. Código: 1.202/03/04', img: '' },
-    { id: 'seg-19', name: 'Guante Látex Exam. Descartable x 100', desc: 'Talles XS, S, M, L y XL. Código: 1.113 al 1.117', img: '' },
-    { id: 'seg-20', name: 'Guante Nitrilo PRINTEX Descartable x 100', desc: 'Talles S, M, L y XL. Color negro. Código: 1.122 al 1.125', img: '' },
-    { id: 'seg-21', name: 'Guante Kevlar Gamisol 119N3', desc: 'Terry aramida forro lana, puño descarne. Código: 1.128', img: '' },
-    { id: 'seg-22', name: 'Guante Kevlar Gamisol 119FUNDEX', desc: 'Terry aramida doble aislación p/descarne. Código: 1.207', img: '' },
-    { id: 'seg-23', name: 'Guante Dieléctrico GLOVEX Clase 00', desc: 'Para 2.500 volt IRAM. Código: 1.165', img: '' },
-    { id: 'seg-24', name: 'Guante Dieléctrico KRAFTEX Clase 0', desc: 'Para 5.000 volt IRAM. Código: 1.242', img: '' },
-    { id: 'seg-25', name: 'Guante Anticorte Gamisol 290 CUT-KEEPER', desc: 'Talles 7-10, largo: 24 cm. Código: 1.140 al 1.143', img: '' },
-    { id: 'seg-26', name: 'Guante Malla de Acero VICSA', desc: 'Talles S, M, L y XL. Por mano ambidiestro. Código: 1.145', img: '' },
-    { id: 'seg-27', name: 'Anteojo PROINMAX FT2601', desc: 'Patilla regulable transparente. Código: 5.69', img: '' },
-    { id: 'seg-28', name: 'Anteojo LIBUS ARGON 900499 HC', desc: 'Patilla regulable (claro/oscuro). Código: 5.3', img: '' },
-    { id: 'seg-29', name: 'Anteojo STEELPRO NITRO', desc: 'Patilla regulable (oscuro/claro). Código: 5.11', img: '' },
-    { id: 'seg-30', name: 'Casco FRAVIDA MAPUCHE 3610', desc: 'Arnés a punto. Colores: Amarillo, blanco, gris, azul, verde, rojo, naranja. Código: 6.1 al 6.7', img: '' },
-],
-    },
-
-    init() {
-        this.renderAll();
-    },
-
-    renderAll() {
-        Object.keys(this.products).forEach(pilar => {
-            const grid = $(`#grid-${pilar}`);
-            if (!grid) return;
-
-            const products = this.products[pilar];
-            if (products.length === 0) return;
-
-            grid.innerHTML = products.map(product => this.createProductCard(product, pilar)).join('');
-        });
-    },
-
-    createProductCard(product, pilar) {
-        const hasImage = product.img ? 
-            `<img src="${product.img}" alt="${product.name}" class="product-img" loading="lazy" width="300" height="240">` :
-            `<div class="w-full h-full bg-gradient-to-br from-stone-100 to-stone-200 flex flex-col items-center justify-center text-stone-400 gap-2">
-                <svg class="w-10 h-10 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-                <span class="text-xs font-medium uppercase tracking-wider">Imagen próximamente</span>
-            </div>`;
-
-        return `
-            <article class="product-card group">
-                <div class="img-container aspect-[4/3] cursor-pointer bg-stone-100 relative overflow-hidden" onclick="openModal('${pilar}', '${product.id}')" role="button" tabindex="0" aria-label="Ver detalle de ${product.name}">
-                    ${hasImage}
-                    <div class="absolute inset-0 bg-forest/0 group-hover:bg-forest/10 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                        <span class="bg-white/90 text-forest text-xs font-semibold uppercase tracking-wider px-4 py-2 rounded-sm shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                            Ver Detalle
-                        </span>
-                    </div>
+/* ==================== RENDER PRODUCTS ==================== */
+function renderProducts() {
+    if (!isCatalog()) return;
+    Object.keys(products).forEach(pilar => {
+        const grid = $(`#grid-${pilar}`);
+        if (!grid) return;
+        grid.innerHTML = products[pilar].map(p => `
+            <div class="producto-card" onclick="openModal('${pilar}', '${p.id}')">
+                <div class="producto-head">
+                    <span class="producto-tag">${pilarNames[pilar]}</span>
+                    <span class="producto-arrow">↗</span>
                 </div>
-                <div class="p-4 lg:p-5">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>
-                        <span class="text-gold text-[10px] font-bold tracking-[0.15em] uppercase">${this.pilarNames[pilar]}</span>
-                    </div>
-                    <h3 class="text-base lg:text-lg font-bold text-forest font-serif mb-2 leading-tight line-clamp-2">${product.name}</h3>
-                    <p class="text-stone-500 text-xs lg:text-sm leading-relaxed mb-4 line-clamp-3">${product.desc}</p>
-                    <div class="flex items-center gap-2">
-                        <button onclick="addToCart('${pilar}', '${product.id}')" class="flex-1 py-2.5 btn-gold font-semibold tracking-wider uppercase text-xs rounded-sm" aria-label="Añadir ${product.name} al carrito">
-                            Añadir
-                        </button>
-                        <button onclick="openModal('${pilar}', '${product.id}')" class="w-10 h-10 flex items-center justify-center border border-stone-300 rounded-sm text-stone-500 hover:text-forest hover:border-forest transition-all" aria-label="Ver detalle de ${product.name}">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                            </svg>
-                        </button>
-                    </div>
+                <div class="producto-img-wrap">
+                    <div class="skeleton"></div>
+                    <img src="${p.img}" alt="${p.name}" class="producto-img" loading="lazy" width="200" height="180" onload="this.classList.add('loaded')" onerror="this.classList.add('loaded');this.style.display='none'">
                 </div>
-            </article>
-        `;
-    }
-};
+                <h3>${p.name}</h3>
+                <p>${p.desc}</p>
+                <button class="producto-btn" onclick="event.stopPropagation();addToCart('${pilar}', '${p.id}')">
+                    Añadir →
+                </button>
+            </div>
+        `).join('');
+    });
+}
 
-// ==================== CATÁLOGO - FILTROS ====================
+/* ==================== TABS ==================== */
 function filterPilar(pilar) {
-    $$('.pilar-tab').forEach(tab => {
-        const isActive = tab.dataset.pilar === pilar;
-        tab.classList.toggle('active', isActive);
-        tab.setAttribute('aria-selected', isActive.toString());
+    $$('.tab').forEach(t => {
+        t.classList.toggle('active', t.dataset.pilar === pilar);
     });
-
-    $$('.pilar-section').forEach(section => {
-        section.classList.add('hidden');
-        section.hidden = true;
+    $$('.productos-section').forEach(s => {
+        s.classList.toggle('active', s.id === `section-${pilar}`);
     });
-
-    const activeSection = $(`#section-${pilar}`);
-    if (activeSection) {
-        activeSection.classList.remove('hidden');
-        activeSection.hidden = false;
+    // Update URL hash without jumping
+    if (pilar !== 'faq') {
+        history.replaceState(null, null, `#catalogo-${pilar}`);
+    } else {
+        history.replaceState(null, null, '#faq');
     }
 }
 
-// ==================== MODAL ====================
-let currentModalProduct = null;
-let modalQty = 1;
+$$('.tab').forEach(tab => {
+    tab.addEventListener('click', () => filterPilar(tab.dataset.pilar));
+});
 
-function openModal(pilar, productId) {
-    const product = ProductCatalog.products[pilar]?.find(p => p.id === productId);
+/* ==================== AUTO-ACTIVATE FROM HASH ==================== */
+(function() {
+    const hash = window.location.hash.replace('#', '');
+    const validPilars = ['intensiva', 'almacenados', 'embalaje', 'urbanas', 'seguridad', 'faq'];
+
+    // Map catalogo-xxx to xxx
+    let targetPilar = null;
+    if (hash.startsWith('catalogo-')) {
+        targetPilar = hash.replace('catalogo-', '');
+    } else if (validPilars.includes(hash)) {
+        targetPilar = hash;
+    }
+
+    if (targetPilar && validPilars.includes(targetPilar)) {
+        const activate = () => {
+            if (typeof filterPilar === 'function') {
+                filterPilar(targetPilar);
+                const tabsSection = $('.tabs');
+                if (tabsSection) {
+                    tabsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => setTimeout(activate, 100));
+        } else {
+            setTimeout(activate, 100);
+        }
+    }
+})();
+
+/* ==================== MODAL ==================== */
+let currentProduct = null;
+
+function openModal(pilar, id) {
+    const product = products[pilar]?.find(p => p.id === id);
     if (!product) return;
-
-    currentModalProduct = { ...product, pilar };
-    modalQty = 1;
+    currentProduct = { ...product, pilar };
 
     const modalImg = $('#modalImg');
+    const modalPilar = $('#modalPilar');
     const modalTitle = $('#modalTitle');
     const modalDesc = $('#modalDesc');
-    const modalPilar = $('#modalPilar');
-    const modalQtyEl = $('#modalQty');
+    const modal = $('#productModal');
 
-    if (modalImg) {
-        modalImg.src = product.img || '';
-        modalImg.alt = product.name;
-    }
+    if (!modalImg || !modal) return;
+
+    modalImg.src = product.img || '';
+    modalImg.alt = product.name;
+    modalImg.classList.remove('loaded');
+    if (modalPilar) modalPilar.textContent = pilarNames[pilar];
     if (modalTitle) modalTitle.textContent = product.name;
     if (modalDesc) modalDesc.textContent = product.desc;
-    if (modalPilar) modalPilar.textContent = ProductCatalog.pilarNames[pilar];
-    if (modalQtyEl) modalQtyEl.textContent = modalQty;
 
-    const modal = $('#productModal');
-    if (modal) {
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
     const modal = $('#productModal');
-    if (modal) {
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-    currentModalProduct = null;
-}
-
-function adjustModalQty(delta) {
-    modalQty = Math.max(1, modalQty + delta);
-    const qtyEl = $('#modalQty');
-    if (qtyEl) qtyEl.textContent = modalQty;
+    if (!modal) return;
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+    currentProduct = null;
 }
 
 function addFromModal() {
-    if (!currentModalProduct) return;
-    addToCart(currentModalProduct.pilar, currentModalProduct.id, modalQty);
+    if (!currentProduct) return;
+    addToCart(currentProduct.pilar, currentProduct.id);
     closeModal();
 }
 
-document.addEventListener('keydown', (e) => {
+// Click outside modal to close
+$('#productModal')?.addEventListener('click', e => {
+    if (e.target === $('#productModal')) closeModal();
+});
+
+/* ==================== CART ==================== */
+let cart = [];
+
+try {
+    const saved = localStorage.getItem(ARGYAN_CONFIG.storageKey);
+    if (saved) cart = JSON.parse(saved);
+} catch (e) { console.warn('No se pudo cargar carrito', e); }
+
+function addToCart(pilar, id) {
+    const product = products[pilar]?.find(p => p.id === id);
+    if (!product) return;
+
+    const existing = cart.find(item => item.id === id);
+    if (existing) {
+        existing.qty++;
+    } else {
+        cart.push({ ...product, pilar, qty: 1 });
+    }
+    saveCart();
+    updateCartUI();
+    showToast(`${product.name} añadido a la consulta`);
+}
+
+function removeFromCart(id) {
+    cart = cart.filter(item => item.id !== id);
+    saveCart();
+    updateCartUI();
+}
+
+function updateQty(id, delta) {
+    const item = cart.find(item => item.id === id);
+    if (!item) return;
+    item.qty = Math.max(1, item.qty + delta);
+    saveCart();
+    updateCartUI();
+}
+
+function saveCart() {
+    try {
+        localStorage.setItem(ARGYAN_CONFIG.storageKey, JSON.stringify(cart));
+    } catch (e) { console.warn('No se pudo guardar carrito', e); }
+}
+
+function updateCartUI() {
+    const count = cart.reduce((sum, item) => sum + item.qty, 0);
+    const badge = $('#cartCount');
+    if (badge) {
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'flex' : 'none';
+    }
+
+    const container = $('#cartItems');
+    if (!container) return;
+
+    if (cart.length === 0) {
+        container.innerHTML = '<div class="cart-empty">La consulta está vacía</div>';
+        return;
+    }
+
+    container.innerHTML = cart.map(item => `
+        <div class="cart-item" style="animation:fadeIn .3s ease">
+            <div class="cart-item-img">
+                <img src="${item.img}" alt="${item.name}" onerror="this.style.display='none'" loading="lazy">
+            </div>
+            <div class="cart-item-info">
+                <h4>${item.name}</h4>
+                <span>${pilarNames[item.pilar]}</span>
+                <div class="cart-item-qty">
+                    <button onclick="updateQty('${item.id}', -1)" aria-label="Disminuir cantidad">−</button>
+                    <span>${item.qty}</span>
+                    <button onclick="updateQty('${item.id}', 1)" aria-label="Aumentar cantidad">+</button>
+                </div>
+            </div>
+            <div class="cart-item-remove" onclick="removeFromCart('${item.id}')">Eliminar</div>
+        </div>
+    `).join('');
+}
+
+function toggleCart() {
+    const sidebar = $('#cartSidebar');
+    const overlay = $('#cartOverlay');
+    if (!sidebar) return;
+
+    const isOpen = sidebar.classList.contains('open');
+    sidebar.classList.toggle('open', !isOpen);
+    overlay?.classList.toggle('open', !isOpen);
+    document.body.style.overflow = isOpen ? '' : 'hidden';
+}
+
+function finalizeCart() {
+    if (cart.length === 0) return;
+
+    const items = cart.map((item, i) => 
+        `${i + 1}. *${item.name}* — ${pilarNames[item.pilar]} — Cant: ${item.qty}`
+    ).join('%0A');
+
+    const msg = `Hola, quiero hacer una consulta desde el catálogo de ARGYAN.%0A%0A*Productos:*%0A${items}%0A%0AQuedo atento/a.`;
+    window.location.href = `https://wa.me/${ARGYAN_CONFIG.whatsappNumber}?text=${msg}`;
+}
+
+/* ==================== TOAST ==================== */
+function showToast(msg) {
+    const existing = $('.toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.style.cssText = 'position:fixed;bottom:100px;right:24px;background:var(--verde-800);color:#fff;padding:14px 24px;border-radius:4px;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:10001;font-size:14px;font-weight:500;transform:translateY(20px);opacity:0;transition:all .3s ease;font-family:Inter,sans-serif;';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.style.transform = 'translateY(0)';
+        toast.style.opacity = '1';
+    });
+
+    setTimeout(() => {
+        toast.style.transform = 'translateY(20px)';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }, 2200);
+}
+
+/* ==================== KEYBOARD ==================== */
+document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
-        closeModal();
-        const sidebar = $('#cartSidebar');
-        if (sidebar?.classList.contains('active')) toggleCart();
+        const modal = $('#productModal');
+        const cart = $('#cartSidebar');
+        if (modal?.classList.contains('active')) closeModal();
+        if (cart?.classList.contains('open')) toggleCart();
     }
 });
 
-$('#productModal')?.addEventListener('click', (e) => {
-    if (e.target === e.currentTarget) closeModal();
+/* ==================== INIT ==================== */
+document.addEventListener('DOMContentLoaded', () => {
+    renderProducts();
+    updateCartUI();
 });
 
-// ==================== CARRITO ====================
-const Cart = {
-    items: [],
-
-    add(pilar, productId, qty = 1) {
-        const product = ProductCatalog.products[pilar]?.find(p => p.id === productId);
-        if (!product) return;
-
-        const existing = this.items.find(item => item.id === productId);
-        if (existing) {
-            existing.qty += qty;
-        } else {
-            this.items.push({ ...product, pilar, qty });
-        }
-
-        this.updateUI();
-        this.showNotification(`${product.name} añadido al carrito`);
-    },
-
-    remove(productId) {
-        this.items = this.items.filter(item => item.id !== productId);
-        this.updateUI();
-    },
-
-    updateQty(productId, delta) {
-        const item = this.items.find(i => i.id === productId);
-        if (!item) return;
-
-        item.qty = Math.max(1, item.qty + delta);
-        this.updateUI();
-    },
-
-    updateUI() {
-        const badge = $('#cartBadge');
-        const itemsContainer = $('#cartItems');
-        const checkoutBtn = $('#checkoutBtn');
-
-        const totalQty = this.items.reduce((sum, item) => sum + item.qty, 0);
-
-        if (badge) {
-            badge.textContent = totalQty;
-            badge.classList.toggle('hidden', totalQty === 0);
-        }
-
-        if (itemsContainer) {
-            if (this.items.length === 0) {
-                itemsContainer.innerHTML = '<p class="text-stone-500 text-center py-8">El carrito está vacío</p>';
-            } else {
-                itemsContainer.innerHTML = this.items.map(item => `
-                    <div class="flex gap-4 mb-4 pb-4 border-b border-stone-100">
-                        <div class="flex-1">
-                            <h4 class="font-semibold text-forest text-sm">${item.name}</h4>
-                            <p class="text-stone-500 text-xs">${ProductCatalog.pilarNames[item.pilar]}</p>
-                            <div class="flex items-center gap-2 mt-2">
-                                <button onclick="Cart.updateQty('${item.id}', -1)" class="quantity-btn text-xs" aria-label="Disminuir">-</button>
-                                <span class="w-6 text-center text-sm">${item.qty}</span>
-                                <button onclick="Cart.updateQty('${item.id}', 1)" class="quantity-btn text-xs" aria-label="Aumentar">+</button>
-                                <button onclick="Cart.remove('${item.id}')" class="ml-auto text-stone-400 hover:text-red-500 transition-colors" aria-label="Eliminar">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            }
-        }
-
-        if (checkoutBtn) {
-            checkoutBtn.disabled = this.items.length === 0;
-        }
-    },
-
-    showNotification(message) {
-        const toast = document.createElement('div');
-        toast.className = 'fixed bottom-4 right-4 bg-forest text-white px-6 py-3 rounded-sm shadow-lg z-[10001] transform translate-y-20 opacity-0 transition-all duration-300';
-        toast.textContent = message;
-        toast.setAttribute('role', 'status');
-        toast.setAttribute('aria-live', 'polite');
-        document.body.appendChild(toast);
-
-        requestAnimationFrame(() => {
-            toast.classList.remove('translate-y-20', 'opacity-0');
-        });
-
-        setTimeout(() => {
-            toast.classList.add('translate-y-20', 'opacity-0');
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
-    },
-
-    finalize() {
-        if (this.items.length === 0) return;
-
-        const numeroWhatsApp = '5493515333794';
-        const productosTexto = this.items.map((item, i) => 
-            `${i + 1}. ${item.name} (${ProductCatalog.pilarNames[item.pilar]}) — Cantidad: ${item.qty}`
-        ).join('\n');
-
-        const texto = `Hola, quiero finalizar una compra desde el catálogo de ARGYAN.\n\n*Productos solicitados:*\n${productosTexto}`;
-        const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`;
-
-        window.open(url, '_blank', 'noopener,noreferrer');
-    }
-};
-
-// Exponer funciones globales necesarias
-window.toggleMobileMenu = toggleMobileMenu;
-window.toggleAccordion = toggleAccordion;
+/* ==================== GLOBALS ==================== */
 window.filterPilar = filterPilar;
 window.openModal = openModal;
 window.closeModal = closeModal;
-window.adjustModalQty = adjustModalQty;
 window.addFromModal = addFromModal;
-window.addToCart = (pilar, productId, qty = 1) => Cart.add(pilar, productId, qty);
-window.toggleCart = () => {
-    const sidebar = $('#cartSidebar');
-    const overlay = $('#cartOverlay');
-    if (!sidebar || !overlay) return;
-
-    const isOpen = sidebar.classList.toggle('active');
-    overlay.classList.toggle('active', isOpen);
-    document.body.style.overflow = isOpen ? 'hidden' : '';
-};
-window.finalizePurchase = () => Cart.finalize();
-window.Cart = Cart;
-
-// ==================== INICIALIZACIÓN ====================
-document.addEventListener('DOMContentLoaded', () => {
-    Navigation.init();
-    FormHandler.init();
-    Animations.init();
-    ProductCatalog.init();
-    Cart.updateUI();
-}); 
+window.addToCart = addToCart;
+window.toggleCart = toggleCart;
+window.finalizeCart = finalizeCart;
+window.updateQty = updateQty;
+window.removeFromCart = removeFromCart;

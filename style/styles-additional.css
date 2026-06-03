@@ -1,0 +1,395 @@
+
+
+/* =========================================================
+   ARGYAN · CSS Adicional - Efectos Premium
+   ========================================================= */
+
+/* ---------- REVEAL ANIMATIONS ---------- */
+.reveal-item {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal-item.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger delays for grids */
+[id^="grid-"] .reveal-item:nth-child(1) { transition-delay: 0ms; }
+[id^="grid-"] .reveal-item:nth-child(2) { transition-delay: 80ms; }
+[id^="grid-"] .reveal-item:nth-child(3) { transition-delay: 160ms; }
+[id^="grid-"] .reveal-item:nth-child(4) { transition-delay: 240ms; }
+[id^="grid-"] .reveal-item:nth-child(5) { transition-delay: 320ms; }
+[id^="grid-"] .reveal-item:nth-child(6) { transition-delay: 400ms; }
+[id^="grid-"] .reveal-item:nth-child(7) { transition-delay: 480ms; }
+[id^="grid-"] .reveal-item:nth-child(8) { transition-delay: 560ms; }
+
+/* ---------- PARALLAX EFFECTS ---------- */
+.parallax-slow {
+    will-change: transform;
+}
+
+/* ---------- MAGNETIC BUTTON HOVER ---------- */
+.btn-primary, .btn-secondary {
+    will-change: transform;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s ease;
+}
+
+/* ---------- GLASS MORPHISM ---------- */
+.glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ---------- TEXT GRADIENT ---------- */
+.text-gradient {
+    background: linear-gradient(135deg, #c9a227 0%, #d4a853 50%, #e8c84a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ---------- SHIMMER LOADING ---------- */
+.shimmer {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+/* ---------- NOISE TEXTURE ---------- */
+.noise-bg {
+    position: relative;
+}
+
+.noise-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* ---------- CARD DEPTH EFFECTS ---------- */
+.depth-card {
+    position: relative;
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.02),
+        0 4px 8px rgba(0, 0, 0, 0.03),
+        0 8px 16px rgba(0, 0, 0, 0.02);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.depth-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(201, 162, 39, 0.2), transparent 50%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+
+.depth-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 
+        0 20px 40px -12px rgba(13, 31, 13, 0.12),
+        0 8px 16px -4px rgba(13, 31, 13, 0.08);
+}
+
+.depth-card:hover::before {
+    opacity: 1;
+}
+
+/* ---------- FLOATING LABELS ---------- */
+.floating-label {
+    position: relative;
+}
+
+.floating-label input:focus + label,
+.floating-label input:not(:placeholder-shown) + label {
+    transform: translateY(-1.5rem) scale(0.85);
+    color: #c9a227;
+}
+
+/* ---------- SCROLLBAR CUSTOM ---------- */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(201, 162, 39, 0.3);
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(201, 162, 39, 0.5);
+}
+
+/* ---------- LOADING SKELETON ---------- */
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        #f0efe9 25%,
+        #fafaf8 50%,
+        #f0efe9 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 0.5rem;
+}
+
+/* ---------- BLOB ANIMATIONS ---------- */
+@keyframes blob {
+    0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+    50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+}
+
+.blob {
+    animation: blob 8s ease-in-out infinite;
+}
+
+/* ---------- MESH GRADIENT ---------- */
+.mesh-gradient {
+    background: 
+        radial-gradient(at 40% 20%, rgba(201, 162, 39, 0.15) 0px, transparent 50%),
+        radial-gradient(at 80% 0%, rgba(74, 143, 63, 0.1) 0px, transparent 50%),
+        radial-gradient(at 0% 50%, rgba(212, 175, 55, 0.1) 0px, transparent 50%),
+        radial-gradient(at 80% 50%, rgba(26, 58, 26, 0.08) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(201, 162, 39, 0.1) 0px, transparent 50%);
+}
+
+/* ---------- SPOTLIGHT EFFECT ---------- */
+.spotlight {
+    position: relative;
+    overflow: hidden;
+}
+
+.spotlight::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+        circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(201, 162, 39, 0.1) 0%,
+        transparent 50%
+    );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.spotlight:hover::before {
+    opacity: 1;
+}
+
+/* ---------- NEON GLOW ---------- */
+.neon-glow {
+    text-shadow: 
+        0 0 5px rgba(201, 162, 39, 0.5),
+        0 0 10px rgba(201, 162, 39, 0.3),
+        0 0 20px rgba(201, 162, 39, 0.2);
+}
+
+/* ---------- 3D CARD FLIP ---------- */
+.flip-card {
+    perspective: 1000px;
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.flip-card-back {
+    transform: rotateY(180deg);
+}
+
+/* ---------- CURSOR FOLLOWER ---------- */
+.cursor-follower {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(201, 162, 39, 0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease-out, opacity 0.3s ease;
+    mix-blend-mode: difference;
+}
+
+/* ---------- PROGRESS BAR ---------- */
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #c9a227, #d4a853, #e8c84a);
+    z-index: 100;
+    transition: width 0.1s ease;
+    box-shadow: 0 0 10px rgba(201, 162, 39, 0.3);
+}
+
+/* ---------- TOOLTIP ---------- */
+.tooltip {
+    position: relative;
+}
+
+.tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    padding: 0.5rem 1rem;
+    background: #1a4d2e;
+    color: white;
+    font-size: 0.75rem;
+    border-radius: 0.5rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ---------- DIVIDER ANIMADO ---------- */
+.animated-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #c9a227, transparent);
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+}
+
+/* ---------- BADGE PULSE ---------- */
+.badge-pulse {
+    position: relative;
+}
+
+.badge-pulse::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    background: inherit;
+    opacity: 0.4;
+    animation: pulse-slow 2s ease-in-out infinite;
+    z-index: -1;
+}
+
+/* ---------- IMAGE REVEAL ---------- */
+.image-reveal {
+    position: relative;
+    overflow: hidden;
+}
+
+.image-reveal::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1a4d2e 0%, #2d6a4f 100%);
+    transform: translateX(-100%);
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.image-reveal.revealed::after {
+    transform: translateX(100%);
+}
+
+/* ---------- HOVER LIFT ---------- */
+.hover-lift {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+}
+
+/* ---------- BORDER GRADIENT ---------- */
+.border-gradient {
+    position: relative;
+    background: white;
+    border-radius: 1rem;
+}
+
+.border-gradient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(135deg, #c9a227, #d4a853, #e8c84a, #c9a227);
+    background-size: 300% 300%;
+    animation: gradient-shift 4s ease infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+@keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* ---------- RESPONSIVE MEJORAS ---------- */
+@media (max-width: 768px) {
+    .gradient-orb {
+        display: none;
+    }
+
+    .cursor-follower {
+        display: none;
+    }
+}

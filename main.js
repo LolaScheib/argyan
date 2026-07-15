@@ -189,7 +189,7 @@ function filterPilar(pilar) {
         t.classList.toggle('active', t.dataset.pilar === pilar);
     });
     $$('.productos-section').forEach(s => {
-        s.classList.toggle('active', s.id === `section-${pilar}`);
+        s.classList.toggle('active', s.id === `catalogo-${pilar}`);
     });
     // Update URL hash without jumping
     if (pilar !== 'faq') {

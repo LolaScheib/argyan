@@ -624,10 +624,6 @@
     .reveal{opacity:0;transform:translateY(30px);transition:all .8s ease}
     .reveal.visible{opacity:1;transform:translateY(0)}
     </style>
-<base target="_blank">
-<base target="_blank">
-<base target="_blank">
-<base target="_blank">
 </head>
 <body>
 
@@ -691,7 +687,6 @@
     <button class="tab" data-pilar="faq">Preguntas Frecuentes</button>
   </div>
 </div>
-</div>
 
 <!-- ======================== PRODUCTOS ======================== -->
 <section class="productos">
@@ -734,24 +729,102 @@
       </div>
       <div class="productos-grid" id="grid-seguridad"></div>
     </div>
-<div class="productos-section" id="faq">
+<div class="productos-section" id="catalogo-faq">
       <div class="productos-header reveal">
         <h2>Preguntas Frecuentes</h2>
         <span>Resolvemos tus dudas</span>
       </div>
-      <div class="faq-grid" id="grid-faq">
 
-        <div class="faq-item reveal">
-          <div class="faq-question">
+      <div class="faq-grid" id="grid-faq">
+        <article class="faq-item reveal">
+          <button class="faq-question" type="button" aria-expanded="false">
             <span class="faq-num">01</span>
             <h3>¿Los productos del catálogo son los únicos disponibles?</h3>
-            <span class="faq-toggle">+</span>
-          </div>
+            <span class="faq-toggle" aria-hidden="true">+</span>
+          </button>
           <div class="faq-answer">
-            <p>No. Este catálogo presenta una selección de los productos más representativos de nuestras líneas de trabajo. Contamos con una amplia variedad de artículos y soluciones adicionales. Si no encuentra lo que necesita, puede realizar su consulta y con gusto lo asesoraremos.</p>
+            <p>No. El catálogo presenta una selección de los productos más representativos de nuestras líneas. Contamos con otros artículos y soluciones adicionales. Si no encontrás lo que necesitás, comunicate con nosotros para recibir asesoramiento.</p>
           </div>
-        </div>
+        </article>
 
+        <article class="faq-item reveal">
+          <button class="faq-question" type="button" aria-expanded="false">
+            <span class="faq-num">02</span>
+            <h3>¿Cómo puedo solicitar una cotización?</h3>
+            <span class="faq-toggle" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Podés seleccionar los productos desde este catálogo y enviar la consulta por WhatsApp. También podés comunicarte mediante el formulario de contacto del sitio o por correo electrónico, indicando producto, cantidad y localidad de entrega.</p>
+          </div>
+        </article>
+
+        <article class="faq-item reveal">
+          <button class="faq-question" type="button" aria-expanded="false">
+            <span class="faq-num">03</span>
+            <h3>¿Realizan envíos?</h3>
+            <span class="faq-toggle" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Sí. Coordinamos entregas según el destino, el tipo de producto y el volumen solicitado. Las condiciones y costos de envío se informan en cada cotización.</p>
+          </div>
+        </article>
+
+        <article class="faq-item reveal">
+          <button class="faq-question" type="button" aria-expanded="false">
+            <span class="faq-num">04</span>
+            <h3>¿Los productos tienen stock permanente?</h3>
+            <span class="faq-toggle" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>La disponibilidad puede variar según el producto, la presentación y la cantidad requerida. Recomendamos consultar el stock actualizado antes de confirmar la compra.</p>
+          </div>
+        </article>
+
+        <article class="faq-item reveal">
+          <button class="faq-question" type="button" aria-expanded="false">
+            <span class="faq-num">05</span>
+            <h3>¿Los Big Bags pueden fabricarse a medida?</h3>
+            <span class="faq-toggle" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Sí. Podemos cotizar Big Bags con distintas medidas, capacidades y sistemas de carga y descarga. Para preparar la propuesta necesitamos conocer las dimensiones, el uso previsto y la cantidad solicitada.</p>
+          </div>
+        </article>
+
+        <article class="faq-item reveal">
+          <button class="faq-question" type="button" aria-expanded="false">
+            <span class="faq-num">06</span>
+            <h3>¿Brindan asesoramiento para elegir el producto adecuado?</h3>
+            <span class="faq-toggle" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Sí. Nuestro equipo puede orientarte según la necesidad productiva o industrial, el tipo de instalación, el producto a almacenar o transportar y las condiciones de uso.</p>
+          </div>
+        </article>
+
+        <article class="faq-item reveal">
+          <button class="faq-question" type="button" aria-expanded="false">
+            <span class="faq-num">07</span>
+            <h3>¿Con qué tipo de clientes trabajan?</h3>
+            <span class="faq-toggle" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Trabajamos con productores, cooperativas, acopios, industrias, plantas de almacenamiento, empresas agroalimentarias y otras organizaciones vinculadas al sector agroindustrial.</p>
+          </div>
+        </article>
+
+        <article class="faq-item reveal">
+          <button class="faq-question" type="button" aria-expanded="false">
+            <span class="faq-num">08</span>
+            <h3>¿Las imágenes y descripciones son definitivas?</h3>
+            <span class="faq-toggle" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Las imágenes son ilustrativas y las presentaciones pueden variar según marca, proveedor y disponibilidad. Antes de comprar, verificá las especificaciones, indicaciones de uso y condiciones comerciales informadas en la cotización.</p>
+          </div>
+        </article>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -884,7 +957,9 @@ function handleCatalogHash() {
         '#catalogo-almacenados': 'almacenados',
         '#catalogo-embalaje': 'embalaje',
         '#catalogo-urbanas': 'urbanas',
-        '#catalogo-seguridad': 'seguridad'
+        '#catalogo-seguridad': 'seguridad',
+        '#catalogo-faq': 'faq',
+        '#faq': 'faq'
     };
 
     var pilar = pilarMap[hash];
@@ -904,7 +979,8 @@ function updateBreadcrumb(pilar) {
         almacenados: 'Granos Almacenados',
         embalaje: 'Soluciones de Embalaje',
         urbanas: 'Control de Plagas',
-        seguridad: 'Seguridad e Higiene'
+        seguridad: 'Seguridad e Higiene',
+        faq: 'Preguntas Frecuentes'
     };
     var sep = document.getElementById('bc-sep');
     var linea = document.getElementById('bc-linea');
@@ -930,14 +1006,17 @@ document.addEventListener('click', function(e) {
     var item = question.closest('.faq-item');
     var wasActive = item.classList.contains('active');
 
-    // Cerrar todos
+    // Cerrar todas las respuestas y actualizar accesibilidad
     document.querySelectorAll('.faq-item').forEach(function(f) {
         f.classList.remove('active');
+        var button = f.querySelector('.faq-question');
+        if (button) button.setAttribute('aria-expanded', 'false');
     });
 
-    // Abrir el clickeado si no estaba activo
+    // Abrir la seleccionada si antes estaba cerrada
     if (!wasActive) {
         item.classList.add('active');
+        question.setAttribute('aria-expanded', 'true');
     }
 });
 

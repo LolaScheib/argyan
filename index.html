@@ -1093,12 +1093,22 @@ const msg = `Hola! Soy ${nombre}, de ${empresa || 'sin empresa'}.%0A%0A` +
             `Linea: ${linea || 'no especificada'}%0A%0A` +
             (mensaje ? `Mensaje: ${encodeURIComponent(mensaje)}` : 'Quiero hacer una consulta desde la web de ARGYAN.');
 
+const whatsappUrl = `https://wa.me/5493515333794?text=${msg}`;
+let redirected = false;
+
+function irAWhatsApp() {
+  if (redirected) return;
+  redirected = true;
+  window.location.href = whatsappUrl;
+}
+
 gtag('event', 'generate_lead', {
   method: 'contact_form',
-  linea_interes: linea
+  linea_interes: linea,
+  event_callback: irAWhatsApp
 });
 
-window.location.href = `https://wa.me/5493515333794?text=${msg}`;
+setTimeout(irAWhatsApp, 1000);
 });
 // Mobile menu
 const menuBtn = document.getElementById('menuBtn');

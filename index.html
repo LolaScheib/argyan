@@ -10,6 +10,25 @@
 
   gtag('config', 'G-3RXZ09RWVG');
 </script>
+
+    <!-- Google Ads conversion -->
+<script>
+  function gtagSendEvent(url) {
+    var callback = function () {
+      if (typeof url === 'string') {
+        window.location = url;
+      }
+    };
+
+    gtag('event', 'manual_event_SUBMIT_LEAD_FORM', {
+      'event_callback': callback,
+      'event_timeout': 2000
+    });
+
+    return false;
+  }
+</script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Soluciones integrales para el sector agroindustrial. Linea intensiva, granos almacenados, embalaje, control de plagas urbanas y elementos de seguridad e higiene.">
@@ -1094,21 +1113,13 @@ const msg = `Hola! Soy ${nombre}, de ${empresa || 'sin empresa'}.%0A%0A` +
             (mensaje ? `Mensaje: ${encodeURIComponent(mensaje)}` : 'Quiero hacer una consulta desde la web de ARGYAN.');
 
 const whatsappUrl = `https://wa.me/5493515333794?text=${msg}`;
-let redirected = false;
-
-function irAWhatsApp() {
-  if (redirected) return;
-  redirected = true;
-  window.location.href = whatsappUrl;
-}
 
 gtag('event', 'generate_lead', {
   method: 'contact_form',
-  linea_interes: linea,
-  event_callback: irAWhatsApp
+  linea_interes: linea
 });
 
-setTimeout(irAWhatsApp, 1000);
+gtagSendEvent(whatsappUrl);
 });
 // Mobile menu
 const menuBtn = document.getElementById('menuBtn');

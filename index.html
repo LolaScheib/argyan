@@ -1080,20 +1080,26 @@ form.addEventListener('submit',function(e){
     form.reportValidity();
     return;
   }
-  const nombre = document.getElementById('nombre').value.trim();
-  const empresa = document.getElementById('empresa').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const telefono = document.getElementById('telefono').value.trim();
-  const linea = document.getElementById('linea').value;
-  const mensaje = document.getElementById('mensaje').value.trim();
-  const msg = `Hola! Soy ${nombre}, de ${empresa || 'sin empresa'}.%0A%0A` +
-              `Email: ${email}%0A` +
-              `Tel: ${telefono || 'no especificado'}%0A` +
-              `Linea: ${linea || 'no especificada'}%0A%0A` +
-              (mensaje ? `Mensaje: ${encodeURIComponent(mensaje)}` : 'Quiero hacer una consulta desde la web de ARGYAN.');
-  window.location.href = `https://wa.me/5493515333794?text=${msg}`;
+const nombre = document.getElementById('nombre').value.trim();
+const empresa = document.getElementById('empresa').value.trim();
+const email = document.getElementById('email').value.trim();
+const telefono = document.getElementById('telefono').value.trim();
+const linea = document.getElementById('linea').value;
+const mensaje = document.getElementById('mensaje').value.trim();
+
+const msg = `Hola! Soy ${nombre}, de ${empresa || 'sin empresa'}.%0A%0A` +
+            `Email: ${email}%0A` +
+            `Tel: ${telefono || 'no especificado'}%0A` +
+            `Linea: ${linea || 'no especificada'}%0A%0A` +
+            (mensaje ? `Mensaje: ${encodeURIComponent(mensaje)}` : 'Quiero hacer una consulta desde la web de ARGYAN.');
+
+gtag('event', 'generate_lead', {
+  method: 'contact_form',
+  linea_interes: linea
 });
 
+window.location.href = `https://wa.me/5493515333794?text=${msg}`;
+});
 // Mobile menu
 const menuBtn = document.getElementById('menuBtn');
 const navLinks = document.querySelector('.nav-links');
